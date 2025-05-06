@@ -1,0 +1,376 @@
+---
+title: "Draft Report: Ankur Bambhrolia"
+format: docx
+editor: visual
+---
+
+## Background/Motivation for the Study
+
+\*\*The main proponent of marijuana is tetrahydrocannabinol (THC) which interacts with the cannaboid receptors of the brain. This pathway is responsible for regulating "learning and memory, emotional processing, sleep, temperature control, pain control, inflammatory and immune responses, and eating" (Grinspoon 2021). THC acts upon these receptors which is how it gives users the "munchies", relieves pain, and promotes the habit formation. 
+
+The main premise for the legalization of marijuana is that the drug is not inherently addictive, and that marijuana has medical applications unlike legalized drugs such alcohol and cigarettes. However, due to the popularity of the positive effects, proponents seem to diminish the negative aspects of marijuana, and propose that the usage of marijuana does not significantly alter one's quality of life.
+
+Quality of life is a catch all term, and it is easier to break it down into three main components: physical health, psychological health, and social health. Previous studies have shown that there is a negative correlation between marijuana usage and the user's quality of life.
+
+Physically, recreational use of marijuana has led to questions about the amount of inhaled THC, and the purity of the THC smoked. This in turn leads to "coughing, increased sputum or phlegm, wheezing, shortness of breath and inflammation of lung tissue" in smokers, which tends to go away once drug usage stops (Neff et al. 2021). While marijuana use is not directly linked to increased heart disease in the same way nicotine is, there is some evidence that links cannabis use to the development of heart disease (Sydney 2002). Furthermore, marijuana also causes "increased heart rates" and "intense nausea and vomiting" (NDIA 2019). Lastly, marijuana increases appetite, but also serves as a protective factor against obesity (Brook et al. 2003).
+
+Psychologically and socially, marijuana has a myriad of negative effects. TCH alters brain chemistry and brain development. Symptoms include changes in mood, hallucinations, impaired memory, and difficulty with critical thinking skills (NDIA 2019). As aforementioned, marijuana promotes habit development, making it harder for user to make significant changes to their lives. Additionally, as users build up a tolerance of THC, users begin to smoke more, worsening the physical and psychological effects. Due to the brain impairments from THC, studies have indicated that those who smoke are less likely to be less educated, have a lower income and are more likely to have a workplace accident than their non-smoking counterparts (NDIA 2023).
+
+## Research Question and Hypothesis
+
+I would like to see if regular marijuana users live a more sedentary lifestyle compared to non-regular marijuana users using BMI, heart rate and physical activity as indicators of an active lifestyle. I anticipate that regular marijuana users have a higher BMI, pulse and are less physically active than their non-regular smoking counterparts. In short, there are 3 hypothesis to test:
+
+1.  Proportion of People who Regularly Smoke and are Physically Active = Proportion of People who do not Regularly Smoke and are Physically Active
+
+    -   H~0~ : 𝑝~Regular Smokers_PhysActive~ -𝑝~not_Regular Smokers_PhysActive~= 0
+
+        -   Null Hypothesis: There is no difference in the proportion of people who do or do not regularly smoke marijuana and are physically active.
+
+    -   H~A~ : 𝑝~Regular Smokers_PhysActive~ -𝑝~not_Regular Smokers_PhysActive~≠ 0
+
+        -   Alternative Hypothesis: There is a difference in the proportion of people who do or do not regularly smoke marijuana and are physically active. Null Hypothesis: There is no difference in the proportion of people who are and are not physically active and regularly smoke marijuana.
+
+2.  Regular Marijuana BMI mean = Non Regular Marijuana BMI mean
+
+    -   H~0~ : µ~RegularBMI~ - µ~NonRegularBMI~ = 0
+
+        -   Null Hypothesis: There is no difference in the mean BMI of regular marijuana users and non-regular marijuana users.
+
+    -   H~A~ : µ~RegularBMI~ - µ~NonRegularBMI~ ≠ 0
+
+        -   Alternative Hypothesis: There is a difference in the mean BMI of regular marijuana users and non-regular marijuana users.
+
+3.  Regular Marijuana Pulse mean = Non Regular Marijuana Pulse mean
+
+    -   H~0~ : µ~RegularPulse~ - µ~NonRegularPulse~ = 0
+
+        -   Null Hypothesis: There is no difference in the mean pulse (Heart Rate) of regular marijuana users and non-regular marijuana users.
+
+    -   H~A~ : µ~RegularPulse~ - µ~NonRegularPulse~ ≠ 0
+
+        -   Alternative Hypothesis: There is a difference in the mean BMI of regular marijuana users and non-regular marijuana users.
+
+## Data Description and Exploratory Data Analysis
+
+The data analyzed was taken by the National American Nutrition Examination Surveys (NHANES) from 2009-2012. 76 variables were measured across 10,000 patients.
+
+Below are the list of variables of interest in answering the research question posed above:
+
+1.  NHANERMJ:
+
+    -   The NHANES table filtered to only include those who answered "Yes" or "No" to regularly smoking Marijuana which is the "predictor" variable. "*Yes*" means that a participant has been/is smoking marijuana regularly. "*No*" means that a participant has not smoked marijuana regularly. *Regularly* is defined as smoking for a minimum once a month over the course of a year.
+
+    -   This is the population of interest. All "NA" values were removed from the table and a result, 4941 participants remain of the original 10,000. The age range for this population is 18-59 years of age.
+
+    -   This table will be filtered further into "YRMJ" and "NRMJ". "YRMJ" only includes data in which people responded "yes" to regularly smoking marijuana. "NRMJ" only includes data in which people responded "No" to regularly smoking marijuana.
+
+2.  BMI: Body Mass Index (kg/m\^2). A general indicator of health.
+
+3.  Pulse: Heart Rate measured in beats per minutes (BPM).
+
+4.  PhyActive: Participant engages in moderate moderate or vigorous-intensity sports, fitness or recreational activities (Yes or No)\*\
+    The age range for the participants in this filtered sample is 18-59 years of age.
+
+## Physical Activity
+
+```{r}
+library(NHANES)
+library(dplyr)
+library(mosaic)
+library(colorspace)
+library(tidyr)
+
+#Filtered Table with those who responded "Yes" or "No" to regular Marijuana Use. 
+
+NHANESRMJ <- NHANES %>% drop_na(RegularMarij)
+NHANESRMJ$RegularMarij <- factor( NHANESRMJ$RegularMarij, levels=c('Yes', 'No'))
+NHANESRMJ$PhysActive <- factor(NHANESRMJ$PhysActive,levels=c('Yes', 'No'))
+```
+
+First we remove any "NA" values for the "RegMarij" column leaving us with a sample of 4941 people, which will serve as our sample size moving forward.
+
+```{r}
+#Contigency Table of people who are physically active grouped by regular marijuana usage
+
+physical_active_table <- addmargins(table(NHANESRMJ$RegularMarij,NHANESRMJ$PhysActive,
+                 dnn = c("Regular Marijuana Use","Physically Active")))
+
+physical_active_table
+
+#Proportion of people who are physically active and not physically active repectively:
+
+2851/4941 #Physically Active
+2090/4941 #Not Physically Active
+
+#Proportion of people who smoke marijuana regularly and do not smoke marijuana regularly repectively: 
+
+1366/4941 #Regular Smokers
+3575/4941 #Not Regular Smokers 
+
+#Proportion of people who regularly smoke and are physically active:
+
+723/1366
+
+#Proportion of people who regularly smoke and are not physically active:
+643/1366
+
+#Releative Frequency of Physically active people grouped together by regular smoking status (n=4941).
+NHANESRMJ %>%
+  ggplot(aes(x=PhysActive, y=after_stat(count/sum(count))*100, fill=as.factor(RegularMarij)))+
+  geom_bar(color = "black", position="dodge")+
+  theme_minimal()+
+  labs(
+    title = "Physical Activity Grouped by Regular Marijuana Usage",
+    fill = "Regular Marijuana Usage",
+    x = "Physically Active",
+    y = "Percentage of People (n=4941)")+
+  scale_fill_discrete_qualitative(palette = "Pastel 1")
+
+
+```
+
+Looking at the sample and diving them those who are physically active and those that are not, we see that about 58% of people are physically active and 42% of people are not physically active. From the sample, about 28% of people smoke marijuana regularly whereas 72% do not smoke marijuana regularly. This is represented by the colors of the bar graph, which means roughly a quarter of the population smokes marijuana regularly. 47% of people who smoke regularly are not physically active where as 53% of people who do smoke regularly are physically active. This 6% difference is visualized in the pink bar in the "yes" group is slightly higher than the pink bar in the "no" group.
+
+This suggests that people who smoke marijuana are more physically active than their non-regular smoking counterparts, which is the opposite of what I anticipated. Due to marijuana's influence on developing habits and how marijuana makes the most mundane tasks entertaining to the smoker, I thought that regular marijuana smokers would be less inclined to be physically active.
+
+## BMI
+
+```{r}
+#Normality Test for BMI
+qqnorm(NHANESRMJ$BMI)
+
+#BMI histogram split by regular smokers and non-regular smokers
+NHANESRMJ %>%
+  ggplot(aes(x=BMI, fill= RegularMarij))+
+  geom_histogram(bins=45,color="black")+
+  theme_minimal()+
+  scale_fill_discrete_qualitative(palette = "Dark 2")+
+  labs(
+    title= "BMI Distribution of Regular Marijuana Users\nand Non-Regular Marijuana Users",
+    x= "BMI (kg/m^2)",
+    y= "Number of People",
+    fill= "Regular Marijuana Usage")
+
+#Boxplot of BMI grouped by Smokers and non-smokers
+
+NHANESRMJ %>%
+  ggplot(aes(x=RegularMarij, y=BMI, fill= as.factor(RegularMarij)))+
+  geom_boxplot(color="black")+
+  theme_minimal()+
+  labs(
+    title= "BMI Distribution of Regular Marijuana Smokers and\nNon-regular Smokers",
+    x= "Smokers",
+    y= "BMI (kg/m^2)",
+    fill = "Marijuana Smokers")+
+  theme_minimal()+
+  scale_fill_discrete_qualitative(palette = "Dark 3")+
+  stat_summary(fun.y="mean",color="navy", shape=18, size=.5)
+
+#Notable BMI Values
+
+#26 People dropped for missing BMI Values
+summary(NHANESRMJ$BMI, na.rm=TRUE)
+
+BMI_Stats <- NHANESRMJ %>% drop_na(BMI)
+BMI_Stats <- BMI_Stats %>%
+  group_by(RegularMarij) %>%
+  summarize(
+    Mean_BMI = mean(BMI),
+    Median_BMI = median(BMI),
+    Min_BMI = min(BMI),
+    Max_BMI = max(BMI),
+    IQR_BMI = IQR(BMI),
+    SD_BMI = sd(BMI),
+    People = n())
+BMI_Stats
+
+```
+
+26 people out of the 4941 were dropped due to missing BMI data bring the sample size down to 4915. The BMI histogram shows the distribution of BMI split by regular marijuana smokers and non-regular marijuana smokers.
+
+The BMI QQ plot and histogram indicates that the BMI values are not normally distributed. There is a slight right skew, indicating that the best test for this data is a Wilcox-Ranking test. In general, most of the BMI values are between 20 kg/m^2^ and 40 kg/m^2^. The box-plot compares the BMI distribution between regular marijuana smokers and non-regular smokers. The non-regular smokers have a larger BMI range, more upper outliers and a slightly higher mean and median than their regular smoking counterparts. The standard deviation in the non-regular smoking group is slightly greater than the regular smoking group. However, the IQR in the non-regular smoking group is slightly smaller than the regular smoking group. The maximum BMI value of the non regular smoking group (81.2 kg/m^2^) is much larger than the largest BMI for the regular smoking group (69.0 kg/m^2^). The table above summarizes important statistics. Most values are very close to each other in each group except for the number of people in each group and the maximum BMI values.
+
+From a macro perspective, this suggests that there is no difference in BMI in regular marijuana smokers and non-regular marijuana smokers. I had expected people who smoke regularly to have a higher BMI partially due to how marijuana induces the user to become hungry and would eat more than their non-regular smoking counterparts. Additionally I also anticipated that regular marijuana smokers would be less inclined to be physically active than non-regular marijuana smokers, resulting in a higher BMI.
+
+## Pulse
+
+```{r}
+#Nomrality Test for Pulse
+qqnorm(NHANESRMJ$Pulse)
+
+#Histogram for Pulse (n= 4863, NA=78) grouped by Smoking Status
+
+NHANESRMJ %>%
+  ggplot(aes(x=Pulse, fill= RegularMarij))+
+  geom_histogram(bins=30,color="black")+
+  theme_minimal()+
+  scale_fill_discrete_qualitative(palette = "Dark 2")+
+  labs(
+    title= "Pulse Distribution of Regular Marijuana Users\nand Non-Regular Marijuana Users",
+    x= "Pulse (Beats per Minute)",
+    y= "Number of People",
+    fill= "Regular Marijuana Usage")
+
+#Boxplot of Pulse Distribution grouped by Smoking Status
+
+NHANESRMJ %>%
+  ggplot(aes(x=RegularMarij, y=Pulse, fill= as.factor(RegularMarij)))+
+  geom_boxplot(color="black")+
+  theme_minimal()+
+  labs(
+    title= "Pulse of Regular Marijuana Smokers\nand Non-regular Smokers",
+    x= "Smokers",
+    y= "Pulse (Beats per Minute)",
+    fill = "Marijuana Smokers")+
+  theme_minimal()+
+  scale_fill_discrete_qualitative(palette = "Dark 3")+
+  stat_summary(fun.y="mean",color="navy", shape=18, size=.5)
+
+#Pulse Summary Stats
+
+summary(NHANESRMJ$Pulse)
+
+Pulse_Stats <- NHANESRMJ %>% drop_na(Pulse)
+Pulse_Stats <- Pulse_Stats %>%
+  group_by(RegularMarij) %>%
+  summarize(
+    Mean_Pulse = mean(Pulse),
+    Median_Pulse = median(Pulse),
+    Min_Pulse = min(Pulse),
+    Max_Pulse = max(Pulse),
+    IQR_Pulse = IQR(Pulse),
+    SD_Pulse = sd(Pulse),
+    People = n())
+Pulse_Stats
+```
+
+Of the original 4941 people, 78 were removed due to not having measured a pulse value, creating a sample size of 4863 people.
+
+The pulse histogram and QQ Plot demonstrate a normal distribution, indicating that a two-sample t-test would be appropriate to compare the pulse means of the Regular smoking group and the non-regular smoking group. The upper and lower quartile of the pulse histogram is 80 to 64 beats per minute (BPM) with a max of 128 BPM and a minimum of 40 BPM. The mean and median pulse values are very close together (73.27 and 72.00 BPM respectively) which is typical of a normal distribution.
+
+The pulse boxplot distributes the pulses by regular marijuana smokers and non-regular marijuana smokers. The median values of both groups are exactly the same and the mean values are very close to each other. The non-regular marijuana smoking group has both upper and lower outliers whereas the regular marijuana smoking group only has upper outliers, and they are more extreme than the outliers of the non-regular marijuana smoking group. Additionally, the IQR and standard deviation of the non-regular smoking group is slightly smaller than than the regular smoking group. While the range of measured pulses are very similar (84 and 82 BPM for the regular smoking group and the non-regular smoking group respectively), the minimum and maximum pulse of the regular smoking group are both higher than he minimum and maximum pulse of the non-regular smoking group.
+
+Similar to the BMI data, there does not seem to be much difference between the heart rates of regular smokers and non-regular smokers. This supports the null hypothesis; however, the people who regularly smoke have a slightly higher heart rate which is what I initially suspected.
+
+## Analysis
+
+#### Physical Activity Analysis
+
+The first association to look is the proportion of people who Regularly Smoke Marijuana and are or are not physically active. The hypothesis are as follows:
+
+-   Proportion of People who Regularly Smoke and are Physically Active = Proportion of People who do not Regularly Smoke and are Physically Active
+
+    -   H~0~ : 𝑝~Regular Smokers_PhysActive~ -𝑝~not_Regular Smokers_PhysActive~ = 0
+
+        -   Null Hypothesis: There is no difference in the proportion of people who do or do not regularly smoke marijuana and are physically active.
+
+    -   H~A~ : 𝑝~Regular Smokers_PhysActive~ -𝑝~not_Regular Smokers_PhysActive~≠ 0
+
+        -   Alternative Hypothesis: There is a difference in the proportion of people who do or do not regularly smoke marijuana and are physically active.
+
+Since we are comparing the proportion of regular smokers who are physically active to proportion of regular smokers who are not physically active. As a result, it is best to use a two sample t-test for proportions for the statistical analysis.
+
+```{r}
+
+#Contingency Table for Physically Active Regular Marijuana Users
+PhysAct_table <-table(NHANESRMJ$RegularMarij,NHANESRMJ$PhysActive,dnn = c("Regular Marijuana Use", "Physically Active"))
+PhysAct_table_total <- addmargins(PhysAct_table)
+PhysAct_table_total
+
+#Two-Sample Proportion Test
+prop.test(~PhysActive | RegularMarij, data=NHANESRMJ,
+          conf.level=0.95, success='Yes')
+
+
+```
+
+Based on the two sample t-test, there is significant difference (p= 0 \< 0.05 = ⍺) between the true proportion of people who are physically active and smoke regularly, and the true proportion of people who are physically active and do not smoke regularly. As result, we can reject the null hypothesis.
+
+The 95% confidence interval for this test has a negative range of -0.097 to -0.034. This suggests that the true proportion of non-regular marijuana users are more physically active than their regular smoking counterparts by about 0.097 to 0.034.
+
+#### BMI Analysis
+
+Next we will look at the relationship between the BMI of people who do and do not regularly smoke marijuana. Since the BMI distribution has a right-skew, we will perform a two sample t-test along with the Wilcoxon Rank Sum Test. The hypothesis for BMI is as follows:
+
+-   Regular Marijuana BMI mean = Non Regular Marijuana BMI mean
+
+    -   H~0~ : µ~RegularBMI~ - µ~NonRegularBMI~ = 0
+
+        -   Null Hypothesis: There is no difference in the mean BMI of regular marijuana users and non-regular marijuana users.
+
+    -   H~A~ : µ~RegularBMI~ - µ~NonRegularBMI~ ≠ 0
+
+        -   Alternative Hypothesis: There is a difference in the mean BMI of regular marijuana users and non-regular marijuana users.
+
+```{r}
+
+#Two Sample T-Test for Mean
+t.test(BMI~RegularMarij, data = NHANESRMJ)
+
+#Wilcoxon Test for Median 
+wilcox.test(BMI~RegularMarij, conf.int=TRUE, data = NHANESRMJ)
+
+#Table for Results 
+```
+
+The t-test provides estimates of the true mean of BMI values of regular smokers and non-regular smokers. Meanwhile, the Wilcoxon test provides estimations of the true median BMI values of the of regular and non-regular smokers.
+
+According to the t-test, there is a significant difference in the true BMI means of regular smokers and non-regular smokers (p=0.04 \< 0.05 = ⍺). Based on this we, can reject the null hypothesis and conclude that there is a significant difference in the true mean BMI between those that smoke marijuana regularly and those that do not. We can be 95% confident that the true difference in BMI between those who smoke marijuana regularly and do not smoke marijuana regularly is negative (-0.858 BMI to -0.016 BMI), indicating that those who do not regularly smoke marijuana have a higher BMI than those who do smoke marijuana.
+
+However, the Wilcoxon test also states that we reject the null hypothesis (p = 0.049 \< 0.05 = ⍺). Since this is based off the median values, we can conclude that there is not a significant difference in the median BMI values of those who regularly smoke marijuana and those who do not. Since the the BMI distribution contains many outliers and is right-skewed, the Wilcoxon test is worth testing as it not as sensitive to outliers. From this test, we can either fail to reject the null hypothesis or reject the null hypothesis depending on the number of significant figures one wishes to go out to. I chose to go with 3 significant figures as a result of comparing it fairly with the critical value, and to remain consistent with the rest of the p-values in this paper.
+
+Furthermore, the 95% confidence interval states that the minimum difference between the means is -7.557x10^-7^. This value, while extremely close to 0, is not actually 0. Therefore we can be 95% confident there is a difference in the true BMI medians between those who regularly smoke marijuana and those who do not regularly smoke marijuana is between (-0.760 BMI to 0 BMI). While zero is included in this range, it is the extreme end of the confidence interval. As a result, the Wilcoxon suggests that we should technically reject the null hypothesis; however, for practical purposes, we should not reject the null hypothesis. As a result, it is-at best-inconclusive.
+
+Between the two tests, we should reject the null hypothesis and conclude that there is a significat difference in the true mean and true median of those who regularly smoke marijuana and those who do not. In both cases, the confidence intervals are negative which suggests that who do not smoke regularly have a higher BMI (at least in terms of the mean) than the BMI of those who smoke regularly. In terms of a difference in the medians, the results are inconclusive.
+
+#### Pulse Analysis
+
+Finally, we will look at the heart rate (Pulse Variable) and determine if there is a difference between the heart rate of those who regularly smoke marijuana and those who do not. Since the *Pulse* variable follows a normal distibution, the two-sample t-test would be the best for this statistical analysis. The hypothesis is as follows:
+
+-   Regular Marijuana Pulse mean = Non Regular Marijuana Pulse mean
+
+    -   H~0~ : µ~RegularPulse~ - µ~NonRegularPulse~ = 0
+
+        -   Null Hypothesis: There is no difference in the mean pulse (Heart Rate) of regular marijuana users and non-regular marijuana users.
+
+    -   H~A~ : µ~RegularPulse~ - µ~NonRegularPulse~ ≠ 0
+
+        -   Alternative Hypothesis: There is a difference in the mean BMI of regular marijuana users and non-regular marijuana users.
+
+```{r}
+#Two Sample T-Test for Mean
+t.test(Pulse~RegularMarij, data = NHANESRMJ)
+```
+
+Since p = 0.01 \< 0.05 = ⍺, we reject the null hypothesis and conclude that there is a significant difference between the true average *Pulse.* Additionally, we can be 95% confident that the true difference in the average heart rate is between -1.689 to -0.199 beats per minute (BPM), meaning that those who do not smoke marijuana have a higher heart rate than those who do smoke marijuana.
+
+## Conclusions
+
+```{r}
+conclusion <- cbind(c(3.109e-5,0.0417,0.0495,0.0130),
+                    c(-0.097,-0.858,-0.760,-1.689), 
+                    c(-0.034, -0.016,0,-0.199))
+rownames(conclusion)=c("Physically Active (Proportion)","BMI(mean)","BMI(median)","Pulse(mean)")
+colnames(conclusion) <- c("𝑝-values","95% Confidence Lower Bound","95% Confidence Upper Bound")
+
+library(knitr)
+conclusion
+knitr::kable(conclusion, caption = "Stastical Analysis Summary")
+
+```
+
+*Regular smokers are proportionally less active, have a lower heart and a lower BMI on average then their non-regular smoking counterparts.* The statistical summary table above summarizes of the p-values and the 95% Confidence Intervals for each test performed.
+
+The most notable finding is that the difference in proportions of non-regular marijuana smokers and regular smokers who work out is between 3.4% and 9.7%. If we take the sample size of the data (n = 4941), then that translates into roughly 170 people and 481 people respectively.
+
+While this may not seem like a lot of people, it would be a step in the right direction to help people from becoming (or staying) sedentary. However, it should be noted that only a small portion of the sample reported smoking marijuana (1366 out of 4941 people, about 27.8%). Furthermore, more than half of the initial respondents (n = 10,000) declined to give any information about regular marijuana usage. It is possible these numbers do not reflect the population parameters we are measuring (population of the United States).
+
+Despite this, the next step in this research would be to determine if people started smoking marijuana *before* or *after* becoming physically active. Marijuana aids in habit formation, and thus it like that the time at which people became regular smokers influences this data. Is a person who is physically active likely to stay physically active upon regular marijuana usage? Is a person who already us not physically active likely to become physically active if they start using marijuana? Does marijuana reinforce existing physical activity behavior (or lackthreof)? These questions are not answered by this study. However, this study does conclude that there is scientific and statistical difference in the physical activity of those who do and do not regularly smoke marijuana.
+
+However, although there is a statical significant difference between true means of the BMI and heart rate of regular smokers and non-regular smokers, that difference is very minimal. Per the 95% Confidence Interval for the BMI mean, we can be 95% confidence that non-regular smokers have a higher BMI than regular smokers by about -0.858 to -0.016 kg/m^2^. A less than 1 BMI is not scientifically useful. For practical purposes there is not a difference in BMIs between the two group even through there is a statistical significance.
+
+Furthermore, this is the same case when looking at the heart rate differences between regular marijuana smokers and the non-regular smokers. The 95% confidence interval for the differences in heart rate is -1.689 to -0.198. A difference in about 1 BPM is not a very practical from a biological perspective, and could be due to a variety of factors. However, there is a statistical significance between the two groups that rejects the null hypothesis. Typically those who are more sedentary have a higher heart rate; however, a difference of 1 BPM is not enough to biologically conclude that regular marijuana use is healthy or unhealthy, as a healthy heart rate fluctuates. Regardless, non-regular marijuana smokers have a higher mean BPM than regular marijuana smokers in this study implying that regular smokers are healthier than their non-regular counterparts.
+
+Lastly, the BMI had a right-skew distribution which led me to use the Wilcoxon-Rank test to compare the difference in the mediums between the BMI of regular smokers and non-regular smokers. The p-value of this test is 0.049 and the confidence interval on the higher end is -7.55x10^-5^ which I rounded to zero in the table above. I concluded that there was a staticial significant difference between the two groups. However, I believe that should best be left to the reader. If one chooses to round 0.049 to 0.05, then one could fail to reject the null hypothesis, and this would be consistent with the 95% Confidence Interval as -7.55x10^-5^ can reasonably be rounded to zero. In this case, a difference of zero would fall within the confidence interval which would be consistent with the p-value results. I chose to reject the null hypothesis due in an attempt to keep the results as accurate as possible. Nonetheless, it is important to point out where subjective decisions have been made in the process of the statistical analysis. Regardless, the difference between the true median BMI values, even if we take the lower bound of the confidence interval (-0.760), is not biologically significant. Comparing the median values is more accurate and reflective of the BMI distribution between the two groups due to the sheer number of outliers-highlighted by the boxplot. This also supports the conclusion we got from comparing the difference in the mean BMI values. Neither one are biologically significant.
+
+From the study, we can conclude that regular marijuana smokers are live a more sedentary life than their non-regular smoking peers. The proportion of non-regular smokers who are physically active is greater by 3.4% to 9.7% than the proportion of regular smokers who are physically active. Paradoxically, there does not seem to be much of a biological difference between regular smokers and non-regular smokers based on BMI and heart rate estimates. Ironically, non-regular smokers have a slightly higher BMI and heart rate on average. There are many factors that may account for this, including the use of marijuana itself. Marijuana has been shown to be a protective factor against obesity. Additionally, marijuana is also linked to a *higher* heart rates, but the study did not specify if the heart rate leads to a higher rate while experiencing a marijuana high or if an elevated heart rate is long term effect of regularly smoking marijuana. While regular marijuana smokers may be more sedentary than their non-regular smokers, the difference in their health seem to be minimal based on the estimates of this study. From here, the next parameters to measure would be the frequency of physical activity, as well as measuring other health and social variables associated with a sedentary lifestyle such as stroke frequency, blood pressure, and the amount of time spent indoors vs outdoors.
